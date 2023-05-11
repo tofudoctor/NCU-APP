@@ -6,36 +6,42 @@ import {
 } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-let n: number = 0;
-let things: string[5];
-
+interface blocks {
+  th: string;
+  priority: string;
+  check : boolean;
+}
 
 export default function App() {
-  const [th, setTH] = useState('');
-  const [priority, setPriority] = useState('!!');
-  const [arrayValue, setArrayValue] = useState([]);
-  const [sliderValue, setSliderValue] = useState(10);
-  const [groupValues, setGroupValues] = useState([]);
+  const [block, setBlock] = useState<blocks>({
+    th: "",
+    priority: "!!",
+    check: false 
+  });
+  const [arrayValue, setArrayValue] = useState<string>([]);
+  const [sliderValue, setSliderValue] = useState<number>(10);
 
   const handleValueChange = (value) => {
     setSliderValue(value); // 更新狀態
-    if(value == 0) setPriority('!!!');
-    else if(value == 10) setPriority('!!');
-    else setPriority('!');
-    console.log(value)
+    if(value == 0) setBlock({ ...block, priority: "!!!" });
+    else if(value == 10) setBlock({ ...block, priority: "!!" });
+    else setBlock({ ...block, priority: "!" });
   };
 
   const handlePress = () => {
-    if (th.trim() === '') {
+    if (block.th.trim() === '') {
       Alert.alert('錯誤', '你沒事做啊!');
       return;
     }
     else{
-      setArrayValue({...arrayValue, [th]: priority}); // 將輸入值添加到數組中
-      setTH('');
-      console.log(priority)
+      setArrayValue({...arrayValue, [block.th]: block.priority}); // 將輸入值添加到數組中
+      setBlock({ ...block, th: "" });
     }
   };
+
+  function handleThChange(text: string) {
+    setBlock({ ...block, th: text });
+  }
 
   return (
     <NativeBaseProvider>
@@ -46,8 +52,8 @@ export default function App() {
       <TextInput
         style={styles.input}
         placeholder="輸入代辦事項"
-        onChangeText={setTH}
-        value={th}
+        onChangeText={handleThChange}
+        value={block.th}
       />
 
       <Box alignItems="center" w="100%">
